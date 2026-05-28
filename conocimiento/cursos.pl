@@ -225,3 +225,40 @@ nombre_curso(simulacion_sistemas_naturales, 'Simulación de Sistemas Naturales')
 nombre_curso(introduccion_biologia_molecular_computacional, 'Introducción a la Biología Molecular Computacional').
 nombre_curso(introduccion_graficos_computador, 'Introducción a los Gráficos por Computadora').
 nombre_curso(recuperacion_informacion_textual, 'Recuperación de Información Textual').
+
+% =========================================================
+% 4. Reglas lógicas (simétricas a `profesores.pl`)
+% =========================================================
+
+% Un curso está registrado si existe como hecho curso/1.
+curso_registrado(Curso) :-
+	curso(Curso).
+
+% Un elemento es curso si tiene la relación es_un con curso.
+es_curso(Curso) :-
+	es_un(Curso, curso).
+
+% Permite obtener el nombre legible de un curso.
+obtener_nombre_curso(Curso, Nombre) :-
+	nombre_curso(Curso, Nombre).
+
+% Permite buscar un curso usando un sinónimo específico.
+buscar_curso(Alias, Curso) :-
+	sinonimo_curso(Alias, Curso).
+
+% Permite buscar el nombre del curso usando un alias.
+buscar_nombre_curso_por_alias(Alias, Nombre) :-
+	buscar_curso(Alias, Curso),
+	nombre_curso(Curso, Nombre).
+
+% Permite consultar datos del curso (nombre y semestre) si existe `semestre/2`.
+datos_curso(Curso, Nombre, Semestre) :-
+	curso(Curso),
+	nombre_curso(Curso, Nombre),
+	semestre(Curso, Semestre).
+
+% Permite consultar nombre y semestre usando un alias.
+datos_curso_por_alias(Alias, Nombre, Semestre) :-
+	buscar_curso(Alias, Curso),
+	nombre_curso(Curso, Nombre),
+	semestre(Curso, Semestre).
