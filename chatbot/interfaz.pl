@@ -39,6 +39,7 @@ mostrar_ayuda :-
     nl,
     writeln('OTROS:'),
     writeln('  ayuda    - Muestra este menú'),
+    writeln('  conocimientos - Muestra cuántos conocimientos aprendió en esta sesión'),
     writeln('  salir    - Cierra el chatbot'),
     writeln('========================================================'),
     nl.
@@ -57,21 +58,8 @@ mostrar_bienvenida :-
     writeln('Chatbot: Escribe "ayuda" para ver los comandos disponibles.'),
     nl.
 
-% Carga conocimiento guardado en sesiones previas si existe.
-cargar_conocimiento_persistente :-
-    (   exists_file('conocimiento/conocimiento_aprendido.pl')
-    ->  catch(
-            (consult('conocimiento/conocimiento_aprendido.pl'),
-             writeln('Chatbot: Conocimiento previo cargado correctamente.')),
-            _,
-            writeln('Chatbot: No se pudo cargar el conocimiento previo.')
-        )
-    ;   true
-    ).
-
 % Inicia la interfaz por consola.
 iniciar_interfaz :-
-    cargar_conocimiento_persistente,
     mostrar_bienvenida,
     ciclo_chatbot.
 
@@ -81,7 +69,6 @@ ciclo_chatbot :-
     (
         es_salida(Palabras)
     ->
-        preguntar_guardar,
         mostrar_respuesta('Hasta luego. Que tengas un excelente día!')
     ;
         catch(
@@ -107,13 +94,67 @@ mostrar_respuesta(Respuesta) :-
 % Maneja el tipo especial mostrar_ayuda.
 manejar_respuesta(mostrar_ayuda) :-
     mostrar_ayuda, !.
+% Muestra el conteo de conocimiento aprendido en esta sesión.
+manejar_respuesta(conteo_conocimientos) :-
+    mostrar_conteo_conocimientos, !.
 % Maneja respuestas desconocidas e inicia flujo de aprendizaje.
 manejar_respuesta(desconocido(Tema, Mensaje)) :-
     mostrar_respuesta(Mensaje),
     preguntar_aprendizaje(Tema), !.
+% Pide confirmación antes de aprender una definición enviada como comando.
+manejar_respuesta(confirmar_aprendizaje_concepto(Tema, Definicion)) :-
+    confirmar_aprendizaje_concepto(Tema, Definicion), !.
+% Pide confirmación antes de aprender un sinónimo enviado como comando.
+manejar_respuesta(confirmar_aprendizaje_sinonimo(Sinonimo, Concepto)) :-
+    confirmar_aprendizaje_sinonimo(Sinonimo, Concepto), !.
 % Maneja respuestas normales.
 manejar_respuesta(Respuesta) :-
     mostrar_respuesta(Respuesta).
+
+confirmar_aprendizaje_concepto(Tema, Definicion) :-
+    nombre_mostrable(Tema, TemaTexto),
+    format('Chatbot: Aprendo que "~w" es "~w". ¿Confirmas? (sí/no)~n', [TemaTexto, Definicion]),
+    leer_confirmacion(Confirmado),
+    (
+        Confirmado = si
+    ->
+        aprender_concepto(Tema, Definicion, Respuesta),
+        mostrar_respuesta(Respuesta)
+    ;
+        mostrar_respuesta('Entendido, no guardé esa información.')
+    ).
+
+confirmar_aprendizaje_sinonimo(Sinonimo, Concepto) :-
+    nombre_mostrable(Sinonimo, SinonimoTexto),
+    nombre_mostrable(Concepto, ConceptoTexto),
+    format('Chatbot: Aprendo que "~w" es sinónimo de "~w". ¿Confirmas? (sí/no)~n', [SinonimoTexto, ConceptoTexto]),
+    leer_confirmacion(Confirmado),
+    (
+        Confirmado = si
+    ->
+        aprender_sinonimo(Sinonimo, Concepto, Respuesta),
+        mostrar_respuesta(Respuesta)
+    ;
+        mostrar_respuesta('Entendido, no guardé esa información.')
+    ).
+
+leer_confirmacion(Confirmado) :-
+    writeln('Usuario:'),
+    flush_output,
+    read_line_to_string(user_input, Entrada),
+    normalizar_entrada(Entrada, Palabras),
+    (
+        (Palabras = [si] ; Palabras = [s])
+    ->
+        Confirmado = si
+    ;
+        Confirmado = no
+    ).
+
+mostrar_conteo_conocimientos :-
+    findall(H, conocimiento_aprendido(H), Hechos),
+    length(Hechos, N),
+    format('Chatbot: He aprendido ~w conocimientos en esta sesión.~n', [N]).
 
 % Solicita al usuario una definición para un tema desconocido.
 preguntar_aprendizaje(Tema) :-
@@ -158,26 +199,3 @@ procesar_respuesta_aprendizaje(Tema, Palabras) :-
         mostrar_respuesta('Entendido, no guardé esa información.')
     ).
 
-% Pregunta si guardar el conocimiento aprendido en esta sesión.
-preguntar_guardar :-
-    findall(H, conocimiento_aprendido(H), Hechos),
-    (
-        Hechos = []
-    ->
-        true
-    ;
-        length(Hechos, N),
-        format('Chatbot: Aprendí ~w nuevos conocimientos en esta sesión.~n', [N]),
-        writeln('Chatbot: ¿Deseas guardar el conocimiento aprendido para futuras sesiones? (sí/no)'),
-        writeln('Usuario:'),
-        flush_output,
-        read_line_to_string(user_input, Entrada),
-        normalizar_entrada(Entrada, Palabras),
-        (
-            (Palabras = [si] ; Palabras = [s])
-        ->
-            guardar_sesion_a_archivo
-        ;
-            writeln('Chatbot: Entendido, el conocimiento de esta sesión no se guardará.')
-        )
-    ).

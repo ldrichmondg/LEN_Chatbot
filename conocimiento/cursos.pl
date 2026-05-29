@@ -309,7 +309,6 @@ nombre_curso(introduccion_biologia_molecular_computacional, 'Introducción a la 
 nombre_curso(introduccion_graficos_computador, 'Introducción a los Gráficos por Computadora').
 nombre_curso(recuperacion_informacion_textual, 'Recuperación de Información Textual').
 
-
 sinonimo(materia, curso).
 sinonimo(asignatura, curso).
 sinonimo(clase, curso).
@@ -342,7 +341,7 @@ sinonimo(comu_escrita, comunicacion_escrita).
 sinonimo(seminario, seminario_estudios_filosoficos_historicos).
 sinonimo(seminario, seminario_estudios_costarricenses).
 sinonimo(humanistica, centros_formacion_humanistica).
-sinonimo(cripto, criptografia)
+sinonimo(cripto, criptografia).
 
 % =========================================================
 % 4. Reglas lógicas (simétricas a `profesores.pl`)

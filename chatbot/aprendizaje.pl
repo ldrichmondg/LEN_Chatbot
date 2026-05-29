@@ -89,33 +89,3 @@ guardar_conocimiento_dinamico(Hecho) :-
     assertz(Hecho),
     assertz(conocimiento_aprendido(Hecho)).
 
-% =========================================================
-% Persiste el conocimiento aprendido en esta sesión a disco.
-% Se agrega al archivo existente (modo append) para no perder
-% lo aprendido en sesiones previas.
-% =========================================================
-
-guardar_sesion_a_archivo :-
-    findall(H, conocimiento_aprendido(H), Hechos),
-    (
-        Hechos = []
-    ->
-        writeln('Chatbot: No hay conocimiento nuevo para guardar.')
-    ;
-        catch(
-            guardar_hechos_a_archivo(Hechos),
-            Error,
-            (format('Chatbot: Error al guardar: ~w~n', [Error]))
-        )
-    ).
-
-guardar_hechos_a_archivo(Hechos) :-
-    open('conocimiento/conocimiento_aprendido.pl', append, Stream, [encoding(utf8)]),
-    write(Stream, '\n% --- Conocimiento aprendido en sesión ---\n'),
-    forall(
-        member(H, Hechos),
-        (write_term(Stream, H, [quoted(true)]), write(Stream, '.\n'))
-    ),
-    close(Stream),
-    length(Hechos, N),
-    format('Chatbot: ~w conocimientos guardados en conocimiento/conocimiento_aprendido.pl~n', [N]).

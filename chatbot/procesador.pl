@@ -14,6 +14,8 @@ detectar_intencion(Palabras, salida) :-
     es_salida(Palabras), !.
 detectar_intencion(Palabras, ayuda) :-
     es_ayuda(Palabras), !.
+detectar_intencion(Palabras, conteo_conocimientos) :-
+    es_conteo_conocimientos(Palabras), !.
 detectar_intencion(Palabras, aprendizaje_sinonimo(Sinonimo, Concepto)) :-
     es_aprendizaje_sinonimo(Palabras, Sinonimo, Concepto), !.
 detectar_intencion(Palabras, aprendizaje_concepto(Tema, Definicion)) :-
@@ -51,6 +53,16 @@ es_ayuda([comandos]).
 es_ayuda([que, puedo, preguntar]).
 es_ayuda([como, te, uso]).
 es_ayuda([como, funciona]).
+
+% =========================================================
+% Conteo del conocimiento aprendido.
+% =========================================================
+
+es_conteo_conocimientos([conocimientos]).
+es_conteo_conocimientos([cuantos, conocimientos]).
+es_conteo_conocimientos([cuantos, conocimientos, aprendiste]).
+es_conteo_conocimientos([cuantos, conocimientos, has, aprendido]).
+es_conteo_conocimientos([conocimientos, aprendidos]).
 
 % =========================================================
 % Preguntas de definición y conceptuales.
@@ -302,10 +314,9 @@ es_consulta_directa(Palabras, Tema) :-
 
 responder_intencion(salida, 'Hasta luego.') :- !.
 responder_intencion(ayuda, mostrar_ayuda) :- !.
-responder_intencion(aprendizaje_sinonimo(Sinonimo, Concepto), Respuesta) :-
-    aprender_sinonimo(Sinonimo, Concepto, Respuesta).
-responder_intencion(aprendizaje_concepto(Tema, Definicion), Respuesta) :-
-    aprender_concepto(Tema, Definicion, Respuesta).
+responder_intencion(conteo_conocimientos, conteo_conocimientos) :- !.
+responder_intencion(aprendizaje_sinonimo(Sinonimo, Concepto), confirmar_aprendizaje_sinonimo(Sinonimo, Concepto)) :- !.
+responder_intencion(aprendizaje_concepto(Tema, Definicion), confirmar_aprendizaje_concepto(Tema, Definicion)) :- !.
 responder_intencion(definicion(Tema), Respuesta) :-
     responder_definicion(Tema, Respuesta).
 responder_intencion(relacion(Relacion), Respuesta) :-

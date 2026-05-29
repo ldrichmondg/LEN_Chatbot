@@ -170,8 +170,8 @@ responder_desconocido(Tema, Respuesta) :-
     nombre_mostrable(Tema, TemaTexto),
     format(
         string(Respuesta),
-        'No tengo conocimiento suficiente sobre "~w". Puedes enseñarme usando: aprender que ~w es <definición>',
-        [TemaTexto, TemaTexto]
+        'No tengo conocimiento suficiente sobre "~w".',
+        [TemaTexto]
     ).
 
 % =========================================================
