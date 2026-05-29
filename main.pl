@@ -8,6 +8,7 @@
 :- dynamic definicion/2.
 :- dynamic sinonimo/2.
 :- dynamic es_un/2.
+:- dynamic tiene/2.
 :- dynamic relacionado_con/2.
 :- dynamic asociado_con/2.
 :- dynamic requisito/2.
@@ -19,6 +20,7 @@
 :- multifile definicion/2.
 :- multifile sinonimo/2.
 :- multifile es_un/2.
+:- multifile tiene/2.
 :- multifile relacionado_con/2.
 :- multifile asociado_con/2.
 :- multifile requisito/2.

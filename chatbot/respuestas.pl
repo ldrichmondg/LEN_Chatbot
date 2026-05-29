@@ -14,7 +14,10 @@ responder_concepto(Tema, Respuesta) :-
 responder_concepto(Tema, desconocido(Tema, Respuesta)) :-
     responder_desconocido(Tema, Respuesta).
 
+% =========================================================
 % Consulta relaciones academicas y generales.
+% =========================================================
+
 responder_relacion(requisitos(Tema), Respuesta) :-
     resolver_alias(Tema, TemaReal),
     findall(Requisito, hecho_seguro(requisito(TemaReal, Requisito)), Requisitos),
@@ -52,48 +55,99 @@ responder_relacion(relaciones(Tema), Respuesta) :-
 responder_relacion(Tema, Respuesta) :-
     responder_desconocido(Tema, Respuesta).
 
-% Busca conocimiento en el orden solicitado.
+% =========================================================
+% Busca conocimiento en el orden de prioridad.
+% =========================================================
+
 buscar_conocimiento(Tema, Respuesta) :-
     resolver_alias(Tema, TemaReal),
     buscar_conocimiento_directo(TemaReal, Respuesta), !.
 buscar_conocimiento(Tema, Respuesta) :-
     buscar_por_sinonimo(Tema, Respuesta), !.
 
+% Orden de busqueda directa:
+% 1. Definicion explicita
+% 2. Concepto
+% 3. es_un con inferencia de tiene
+% 4. Propiedades directas de tiene
+% 5. relacionado_con
+% 6. asociado_con
+% 7. requisito directo
+% 8. correquisito directo
+% 9. Inferencia de dependencia de cursos
+% 10. Datos de curso registrado
+% 11. Datos de profesor registrado
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(definicion(Tema, Respuesta)), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(concepto(Tema, Respuesta)), !.
+
+% Inferencia: si X es_un Y y Y tiene propiedades, X las hereda.
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(es_un(Tema, Clase)),
-    respuesta_es_un(Tema, Clase, Respuesta), !.
+    findall(P, hecho_seguro(tiene(Clase, P)), Props),
+    (
+        Props \= []
+    ->
+        nombre_mostrable(Tema, TemaTexto),
+        nombre_mostrable(Clase, ClaseTexto),
+        maplist(nombre_mostrable, Props, PropsTexto),
+        atomic_list_concat(PropsTexto, ', ', PropsUnidos),
+        format(string(Respuesta),
+            '~w es un ~w, y por inferencia logica tiene: ~w.',
+            [TemaTexto, ClaseTexto, PropsUnidos])
+    ;
+        respuesta_es_un(Tema, Clase, Respuesta)
+    ), !.
+
+% Propiedades directas de tiene.
+buscar_conocimiento_directo(Tema, Respuesta) :-
+    findall(P, hecho_seguro(tiene(Tema, P)), Props),
+    Props \= [],
+    nombre_mostrable(Tema, TemaTexto),
+    maplist(nombre_mostrable, Props, PropsTexto),
+    atomic_list_concat(PropsTexto, ', ', PropsUnidos),
+    format(string(Respuesta), '~w tiene: ~w.', [TemaTexto, PropsUnidos]), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(relacionado_con(Tema, Relacionado)),
     nombre_mostrable(Tema, TemaTexto),
     nombre_mostrable(Relacionado, RelacionadoTexto),
     format(string(Respuesta), '~w esta relacionado con ~w.', [TemaTexto, RelacionadoTexto]), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(asociado_con(Tema, Asociado)),
     nombre_mostrable(Tema, TemaTexto),
     nombre_mostrable(Asociado, AsociadoTexto),
     format(string(Respuesta), '~w esta asociado con ~w.', [TemaTexto, AsociadoTexto]), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(requisito(Tema, Requisito)),
     nombre_mostrable(Tema, TemaTexto),
     nombre_mostrable(Requisito, RequisitoTexto),
     format(string(Respuesta), '~w tiene como requisito a ~w.', [TemaTexto, RequisitoTexto]), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(correquisito(Tema, Correquisito)),
     nombre_mostrable(Tema, TemaTexto),
     nombre_mostrable(Correquisito, CorrequisitoTexto),
     format(string(Respuesta), '~w tiene como correquisito a ~w.', [TemaTexto, CorrequisitoTexto]), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     inferir_dependencia(Tema, Respuesta), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     datos_curso_seguro(Tema, Respuesta), !.
+
 buscar_conocimiento_directo(Tema, Respuesta) :-
     datos_profesor_seguro(Tema, Respuesta), !.
 
-% Busca usando sinonimos generales, de cursos o de profesores.
+% =========================================================
+% Busca usando sinonimos con deteccion de ciclos.
+% =========================================================
+
 buscar_por_sinonimo(Tema, Respuesta) :-
     buscar_por_sinonimo(Tema, Respuesta, []).
 
@@ -106,21 +160,30 @@ buscar_por_sinonimo(Tema, Respuesta, Visitados) :-
     alias_seguro(Tema, OtroTema),
     buscar_por_sinonimo(OtroTema, Respuesta, [Tema | Visitados]), !.
 
+% =========================================================
 % Mensaje para conocimiento no encontrado.
+% =========================================================
+
 responder_desconocido(Tema, Respuesta) :-
     nombre_mostrable(Tema, TemaTexto),
     format(
         string(Respuesta),
-        'No tengo conocimiento suficiente sobre ~w. Puedes ensenarme usando: aprender que tema es definicion',
-        [TemaTexto]
+        'No tengo conocimiento suficiente sobre "~w". Puedes ensenarme usando: aprender que ~w es <definicion>',
+        [TemaTexto, TemaTexto]
     ).
 
-% Relacion general: es_un, relacionado_con, asociado_con, requisito o correquisito.
+% =========================================================
+% Relacion general: busca cualquier hecho conocido.
+% =========================================================
+
 buscar_relacion_general(Tema, Respuesta) :-
     resolver_alias(Tema, TemaReal),
     buscar_conocimiento_directo(TemaReal, Respuesta).
 
+% =========================================================
 % Convierte listas de relaciones en una respuesta legible.
+% =========================================================
+
 respuesta_lista(_, [], 'No encontre datos registrados para esa consulta.') :- !.
 respuesta_lista(Prefijo, Lista, Respuesta) :-
     sort(Lista, ListaUnica),
@@ -129,7 +192,10 @@ respuesta_lista(Prefijo, Lista, Respuesta) :-
     atomic_list_concat(ListaTexto, ', ', Texto),
     format(string(Respuesta), '~w: ~w.', [Prefijo, Texto]).
 
-% Inferencias logicas simples.
+% =========================================================
+% Inferencias logicas de requisitos y correquisitos.
+% =========================================================
+
 responder_requisito_de(Requisito, Curso, Respuesta) :-
     hecho_seguro(requisito(Curso, Requisito)),
     nombre_mostrable(Requisito, RequisitoTexto),
@@ -193,7 +259,10 @@ restar_lista([Elemento | Resto], Lista, Faltantes) :-
 restar_lista([Elemento | Resto], Lista, [Elemento | Faltantes]) :-
     restar_lista(Resto, Lista, Faltantes).
 
-% Resuelve alias conocidos antes de consultar.
+% =========================================================
+% Resolucion de alias y verificacion de temas registrados.
+% =========================================================
+
 resolver_alias(Tema, Tema) :-
     tema_registrado(Tema), !.
 resolver_alias(Tema, TemaReal) :-
@@ -210,6 +279,8 @@ tema_registrado(Tema) :-
     hecho_seguro(profesor(Tema)), !.
 tema_registrado(Tema) :-
     hecho_seguro(es_un(Tema, _)), !.
+tema_registrado(Tema) :-
+    hecho_seguro(tiene(Tema, _)), !.
 tema_registrado(Tema) :-
     hecho_seguro(relacionado_con(Tema, _)), !.
 tema_registrado(Tema) :-
@@ -228,7 +299,10 @@ alias_seguro(Tema, Alias) :-
 alias_seguro(Tema, Alias) :-
     hecho_seguro(sinonimo_profesor(Tema, Alias)).
 
-% Datos especiales para cursos.
+% =========================================================
+% Datos especiales para cursos y profesores.
+% =========================================================
+
 datos_curso_seguro(Tema, Respuesta) :-
     existe_predicado(curso/1),
     curso(Tema),
@@ -242,7 +316,6 @@ datos_curso_seguro(Tema, Respuesta) :-
         format(string(Respuesta), '~w es un curso registrado en la base de conocimiento.', [NombreTexto])
     ).
 
-% Datos especiales para profesores.
 datos_profesor_seguro(Tema, Respuesta) :-
     existe_predicado(profesor/1),
     profesor(Tema),
@@ -258,7 +331,7 @@ datos_profesor_seguro(Tema, Respuesta) :-
         format(string(Respuesta), '~w es profesor de Computacion.', [NombreTexto])
     ).
 
-% Respuesta especial para hechos es_un/2.
+% Respuesta especial para hechos es_un/2 sin tiene/2 asociado.
 respuesta_es_un(Tema, profesor, Respuesta) :-
     datos_profesor_seguro(Tema, Respuesta), !.
 respuesta_es_un(Tema, curso, Respuesta) :-
@@ -268,7 +341,10 @@ respuesta_es_un(Tema, Clase, Respuesta) :-
     nombre_mostrable(Clase, ClaseTexto),
     format(string(Respuesta), '~w es un ~w.', [TemaTexto, ClaseTexto]).
 
+% =========================================================
 % Llama un hecho solo si su predicado existe.
+% =========================================================
+
 hecho_seguro(Hecho) :-
     functor(Hecho, Nombre, Aridad),
     current_predicate(Nombre/Aridad),

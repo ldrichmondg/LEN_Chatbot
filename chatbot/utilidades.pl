@@ -8,10 +8,11 @@ normalizar_entrada(Entrada, Palabras) :-
     limpiar_signos(Minusculas, Limpia),
     dividir_palabras(Limpia, Palabras).
 
-% Divide un texto en atomos.
+% Divide un texto en atomos, eliminando cadenas vacias.
 dividir_palabras(Texto, Palabras) :-
     split_string(Texto, " \t\n", " \t\n", Strings),
-    maplist(atom_string, Palabras, Strings).
+    include([S]>>(S \= ""), Strings, StringsLimpios),
+    maplist(atom_string, Palabras, StringsLimpios).
 
 % Quita signos comunes y normaliza tildes basicas.
 limpiar_signos(Texto, Limpio) :-

@@ -444,18 +444,6 @@ buscar_correo_por_alias(Alias, Correo) :-
     buscar_profesor(Alias, Profesor),
     correo_profesor(Profesor, Correo).
 
-% Regla X:
-% Devuelve una lista única de profesores que coinciden con un alias.
-% Combina: sinonimos individuales, sinonimo_profesores (listas explícitas) y
-% coincidencias por subcadena en el identificador (ej. 'jose' -> jose_helo).
-buscar_profesores_por_alias(Alias, ListaUnica) :-
-    findall(P, (
-        sinonimo_profesor(Alias, P)
-    ;   (sinonimo_profesores(Alias, L), member(P, L))
-    ;   (profesor(P), sub_atom(P, _, _, _, Alias))
-    ), Results),
-    sort(Results, ListaUnica),
-    ListaUnica \= [].
 
 % Regla 8:
 % Permite consultar el nombre y correo de un profesor usando su identificador.
@@ -476,4 +464,16 @@ datos_profesor_por_alias(Alias, Nombre, Correo) :-
 profesor_de_computacion(Profesor) :-
     profesor(Profesor),
     relacionado_con(Profesor, carrera_computacion).
-
+    
+% Regla 11:
+% Devuelve una lista única de profesores que coinciden con un alias.
+% Combina: sinonimos individuales, sinonimo_profesores (listas explícitas) y
+% coincidencias por subcadena en el identificador (ej. 'jose' -> jose_helo).
+buscar_profesores_por_alias(Alias, ListaUnica) :-
+    findall(P, (
+        sinonimo_profesor(Alias, P)
+    ;   (sinonimo_profesores(Alias, L), member(P, L))
+    ;   (profesor(P), sub_atom(P, _, _, _, Alias))
+    ), Results),
+    sort(Results, ListaUnica),
+    ListaUnica \= [].
