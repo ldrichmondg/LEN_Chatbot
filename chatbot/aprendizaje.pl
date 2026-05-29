@@ -1,0 +1,91 @@
+:- encoding(utf8).
+
+% =========================================================
+% Aprendizaje dinámico del chatbot
+% =========================================================
+
+:- dynamic concepto/2.
+:- dynamic definicion/2.
+:- dynamic sinonimo/2.
+:- dynamic conocimiento_aprendido/1.
+
+% =========================================================
+% Aprender un concepto nuevo.
+% Valida duplicados y longitud mínima antes de guardar.
+% =========================================================
+
+% La definición es demasiado corta para ser válida.
+aprender_concepto(_, Descripcion, 'La definición es demasiado corta. Por favor escribe una definición más completa.') :-
+    atom_length(Descripcion, Len),
+    Len < 4, !.
+
+% Ya existe conocimiento sobre ese tema.
+aprender_concepto(Tema, _, Respuesta) :-
+    (hecho_seguro(concepto(Tema, _)) ; hecho_seguro(definicion(Tema, _))),
+    !,
+    nombre_mostrable(Tema, TemaTexto),
+    format(string(Respuesta),
+        'Ya tengo información sobre "~w". Si deseas actualizarla, usa: actualizar que ~w es <nueva definición>.',
+        [TemaTexto, TemaTexto]).
+
+% Guarda el nuevo concepto.
+aprender_concepto(Tema, Descripcion, Respuesta) :-
+    guardar_conocimiento_dinamico(concepto(Tema, Descripcion)),
+    guardar_conocimiento_dinamico(definicion(Tema, Descripcion)),
+    nombre_mostrable(Tema, TemaTexto),
+    format(string(Respuesta), 'He aprendido que ~w es ~w.', [TemaTexto, Descripcion]).
+
+% =========================================================
+% Actualizar un concepto existente.
+% =========================================================
+
+actualizar_concepto(Tema, Descripcion, Respuesta) :-
+    (retract(concepto(Tema, _)) -> true ; true),
+    (retract(definicion(Tema, _)) -> true ; true),
+    guardar_conocimiento_dinamico(concepto(Tema, Descripcion)),
+    guardar_conocimiento_dinamico(definicion(Tema, Descripcion)),
+    nombre_mostrable(Tema, TemaTexto),
+    format(string(Respuesta), 'He actualizado el conocimiento sobre ~w.', [TemaTexto]).
+
+% =========================================================
+% Aprender una definición directa.
+% =========================================================
+
+aprender_definicion(Tema, Definicion, Respuesta) :-
+    guardar_conocimiento_dinamico(definicion(Tema, Definicion)),
+    nombre_mostrable(Tema, TemaTexto),
+    format(string(Respuesta), 'He aprendido la definición de ~w.', [TemaTexto]).
+
+% =========================================================
+% Aprender un sinónimo nuevo.
+% Valida que no exista ya antes de guardar.
+% =========================================================
+
+aprender_sinonimo(Sinonimo, Concepto, Respuesta) :-
+    hecho_seguro(sinonimo(Sinonimo, Concepto)),
+    !,
+    nombre_mostrable(Sinonimo, SinonimoTexto),
+    nombre_mostrable(Concepto, ConceptoTexto),
+    format(string(Respuesta), 'Ya sabía que ~w es sinónimo de ~w.', [SinonimoTexto, ConceptoTexto]).
+
+aprender_sinonimo(Sinonimo, Concepto, Respuesta) :-
+    hecho_seguro(sinonimo(Concepto, Sinonimo)),
+    !,
+    nombre_mostrable(Sinonimo, SinonimoTexto),
+    nombre_mostrable(Concepto, ConceptoTexto),
+    format(string(Respuesta), 'Ya sabía que ~w y ~w son equivalentes.', [SinonimoTexto, ConceptoTexto]).
+
+aprender_sinonimo(Sinonimo, Concepto, Respuesta) :-
+    guardar_conocimiento_dinamico(sinonimo(Sinonimo, Concepto)),
+    nombre_mostrable(Sinonimo, SinonimoTexto),
+    nombre_mostrable(Concepto, ConceptoTexto),
+    format(string(Respuesta), 'He aprendido que ~w es sinónimo de ~w.', [SinonimoTexto, ConceptoTexto]).
+
+% =========================================================
+% Guarda un hecho dinámicamente y registra que fue aprendido.
+% =========================================================
+
+guardar_conocimiento_dinamico(Hecho) :-
+    assertz(Hecho),
+    assertz(conocimiento_aprendido(Hecho)).
+

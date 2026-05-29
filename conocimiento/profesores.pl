@@ -1,3 +1,5 @@
+:- encoding(utf8).
+
 % =========================================================
 % Base de conocimiento - Profesores de Computación
 % Proyecto 3 - Paradigma Lógico
@@ -99,36 +101,36 @@ nombre_profesor(aurelio_sanabria_rodriguez, 'Aurelio Sanabria Rodríguez').
 nombre_profesor(carlos_benavides_cespedes, 'Carlos Benavides Céspedes').
 nombre_profesor(diego_mora, 'Diego Mora').
 nombre_profesor(ericka_solano, 'Ericka Solano').
-nombre_profesor(erika_marin, 'Erika Marin').
+nombre_profesor(erika_marin, 'Erika Marín').
 nombre_profesor(esteban_arias_mendez, 'Esteban Arias-Méndez').
-nombre_profesor(franco_quiros, 'Franco Quiros').
+nombre_profesor(franco_quiros, 'Franco Quirós').
 nombre_profesor(gerardo_nereo_campos, 'Gerardo Nereo Campos').
 nombre_profesor(herson_esquivel_vargas, 'Herson Esquivel Vargas').
-nombre_profesor(ivan_campos, 'Ivan Campos').
+nombre_profesor(ivan_campos, 'Iván Campos').
 nombre_profesor(ivannia_cerdas, 'Ivannia Cerdas').
 nombre_profesor(jaime_solano, 'Jaime Solano').
 nombre_profesor(jean_carlo_miranda, 'Jean Carlo Miranda').
 nombre_profesor(jorge_vargas, 'Jorge Vargas').
-nombre_profesor(jose_navas, 'Jose Navas').
+nombre_profesor(jose_navas, 'José Navas').
 nombre_profesor(rodrigo_nunez, 'Rodrigo Núñez').
 nombre_profesor(kenneth_obando, 'Kenneth Obando').
 nombre_profesor(kirstein_gatjens, 'Kirstein Gatjens').
 nombre_profesor(laura_coto, 'Laura Coto').
 nombre_profesor(luis_roberto_villalobos_arias, 'Luis Roberto Villalobos Arias').
-nombre_profesor(mario_chacon, 'Mario Chacon').
+nombre_profesor(mario_chacon, 'Mario Chacón').
 nombre_profesor(mauricio_arroyo_herrera, 'Mauricio Arroyo Herrera').
-nombre_profesor(roberto_cortes, 'Roberto Cortes').
+nombre_profesor(roberto_cortes, 'Roberto Cortés').
 nombre_profesor(victor_garro, 'Victor Garro').
 nombre_profesor(william_mata_rodriguez, 'William Mata Rodríguez').
-nombre_profesor(rodrigo_bogarin_navarro, 'Rodrigo Bogarin Navarro').
+nombre_profesor(rodrigo_bogarin_navarro, 'Rodrigo Bogarín Navarro').
 nombre_profesor(yuen_law, 'Yuen Law').
 nombre_profesor(jose_helo, 'José Helo').
-nombre_profesor(steven_pacheco_portuguez, 'Steven Pacheco Portuguez').
-nombre_profesor(martin_flores, 'Martin Flores').
+nombre_profesor(steven_pacheco_portuguez, 'Steven Pacheco Portugués').
+nombre_profesor(martin_flores, 'Martín Flores').
 nombre_profesor(juan_carlos_ortega, 'Juan Carlos Ortega').
-nombre_profesor(mauricio_aviles_cisneros, 'Mauricio Aviles Cisneros').
-nombre_profesor(adriana_alvarez_figueroa, 'Adriana Alvarez Figueroa').
-nombre_profesor(bryan_tomas_hernandez_sibaja, 'Bryan Tomas Hernández Sibaja').
+nombre_profesor(mauricio_aviles_cisneros, 'Mauricio Avilés Cisneros').
+nombre_profesor(adriana_alvarez_figueroa, 'Adriana Álvarez Figueroa').
+nombre_profesor(bryan_tomas_hernandez_sibaja, 'Bryan Tomás Hernández Sibaja').
 nombre_profesor(jose_helo_guzman, 'José Helo Guzmán').
 
 % =========================================================
@@ -444,18 +446,6 @@ buscar_correo_por_alias(Alias, Correo) :-
     buscar_profesor(Alias, Profesor),
     correo_profesor(Profesor, Correo).
 
-% Regla X:
-% Devuelve una lista única de profesores que coinciden con un alias.
-% Combina: sinonimos individuales, sinonimo_profesores (listas explícitas) y
-% coincidencias por subcadena en el identificador (ej. 'jose' -> jose_helo).
-buscar_profesores_por_alias(Alias, ListaUnica) :-
-    findall(P, (
-        sinonimo_profesor(Alias, P)
-    ;   (sinonimo_profesores(Alias, L), member(P, L))
-    ;   (profesor(P), sub_atom(P, _, _, _, Alias))
-    ), Results),
-    sort(Results, ListaUnica),
-    ListaUnica \= [].
 
 % Regla 8:
 % Permite consultar el nombre y correo de un profesor usando su identificador.
@@ -476,4 +466,16 @@ datos_profesor_por_alias(Alias, Nombre, Correo) :-
 profesor_de_computacion(Profesor) :-
     profesor(Profesor),
     relacionado_con(Profesor, carrera_computacion).
-
+    
+% Regla 11:
+% Devuelve una lista única de profesores que coinciden con un alias.
+% Combina: sinonimos individuales, sinonimo_profesores (listas explícitas) y
+% coincidencias por subcadena en el identificador (ej. 'jose' -> jose_helo).
+buscar_profesores_por_alias(Alias, ListaUnica) :-
+    findall(P, (
+        sinonimo_profesor(Alias, P)
+    ;   (sinonimo_profesores(Alias, L), member(P, L))
+    ;   (profesor(P), sub_atom(P, _, _, _, Alias))
+    ), Results),
+    sort(Results, ListaUnica),
+    ListaUnica \= [].
