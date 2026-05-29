@@ -1,6 +1,8 @@
+:- encoding(utf8).
+
 % =========================================================
 % Archivo principal del chatbot
-% Proyecto 3 - Paradigma Logico
+% Proyecto 3 - Paradigma Lógico
 % =========================================================
 
 % Predicados compartidos por varios archivos de conocimiento.

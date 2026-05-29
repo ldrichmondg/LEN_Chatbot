@@ -1,42 +1,44 @@
+:- encoding(utf8).
+
 % =========================================================
 % Interfaz de consola del chatbot
 % =========================================================
 
-% Muestra el menu completo de ayuda.
+% Muestra el menú completo de ayuda.
 mostrar_ayuda :-
     nl,
     writeln('========================================================'),
     writeln('        COMANDOS DISPONIBLES DEL CHATBOT                '),
     writeln('========================================================'),
     writeln('PREGUNTAS SOBRE CONCEPTOS:'),
-    writeln('  que es [tema]              - Definicion de un tema'),
-    writeln('  quien es [nombre]          - Informacion sobre una persona'),
-    writeln('  cuales son [tema]          - Lista elementos relacionados'),
-    writeln('  cuantos [tema]             - Cuenta elementos de un tipo'),
-    writeln('  como funciona [tema]       - Explica como funciona algo'),
-    writeln('  donde se usa [tema]        - Contexto de uso'),
-    writeln('  cuando se usa [tema]       - Temporalidad de uso'),
-    writeln('  para que sirve [tema]      - Utilidad de algo'),
-    writeln('  explique [tema]            - Solicita una explicacion'),
-    writeln('  defina [tema]              - Solicita una definicion'),
-    writeln('  describe [tema]            - Descripcion de un tema'),
-    writeln('  cuentame sobre [tema]      - Informacion general'),
-    writeln('  habla de [tema]            - Informacion general'),
+    writeln('  qué es [tema]           '),
+    writeln('  quién es [nombre]       '),
+    writeln('  cuáles son [tema]       '),
+    writeln('  cuántos [tema]          '),
+    writeln('  cómo funciona [tema]    '),
+    writeln('  dónde se usa [tema]     '),
+    writeln('  cuándo se usa [tema]    '),
+    writeln('  para qué sirve [tema]   '),
+    writeln('  explique [tema]         '),
+    writeln('  defina [tema]           '),
+    writeln('  describe [tema]         '),
+    writeln('  cuéntame sobre [tema]   '),
+    writeln('  habla de [tema]         '),
     nl,
-    writeln('CONSULTAS ACADEMICAS:'),
-    writeln('  requisitos de [curso]      - Requisitos de un curso'),
-    writeln('  correquisitos de [curso]   - Correquisitos de un curso'),
-    writeln('  cursos sin requisitos      - Cursos de primer ingreso'),
-    writeln('  puedo matricular [curso] si aprobe [c1] y [c2]'),
+    writeln('CONSULTAS ACADÉMICAS:'),
+    writeln('  requisitos de [curso]                         '),
+    writeln('  correquisitos de [curso]                      '),
+    writeln('  cursos sin requisitos                         '),
+    writeln('  puedo matricular [curso] si aprobé [c1] y [c2]'),
     nl,
-    writeln('APRENDIZAJE DINAMICO:'),
-    writeln('  aprender que [tema] es [definicion]'),
-    writeln('  aprender que [termino] es sinonimo de [concepto]'),
-    writeln('  [termino] significa [concepto]'),
-    writeln('  aprender sinonimo [termino] [concepto]'),
+    writeln('APRENDIZAJE DINÁMICO:'),
+    writeln('  aprender que [tema] es [definición]'),
+    writeln('  aprender que [término] es sinónimo de [concepto]'),
+    writeln('  [término] significa [concepto]'),
+    writeln('  aprender sinónimo [término] [concepto]'),
     nl,
     writeln('OTROS:'),
-    writeln('  ayuda    - Muestra este menu'),
+    writeln('  ayuda    - Muestra este menú'),
     writeln('  salir    - Cierra el chatbot'),
     writeln('========================================================'),
     nl.
@@ -45,13 +47,13 @@ mostrar_ayuda :-
 mostrar_bienvenida :-
     nl,
     writeln('========================================================='),
-    writeln('    Chatbot - Ingenieria en Computacion del TEC           '),
-    writeln('          Desarrollado con Paradigma Logico               '),
+    writeln('    Chatbot - Ingeniería en Computación del TEC           '),
+    writeln('          Desarrollado con Paradigma Lógico               '),
     writeln('========================================================='),
     writeln('Chatbot: Hola! Soy el asistente virtual de la carrera de'),
-    writeln('         Ingenieria en Computacion del TEC.'),
+    writeln('         Ingeniería en Computación del TEC.'),
     writeln('Chatbot: Puedo responder preguntas sobre cursos, profesores,'),
-    writeln('         conceptos de computacion y mucho mas.'),
+    writeln('         conceptos de computación y mucho más.'),
     writeln('Chatbot: Escribe "ayuda" para ver los comandos disponibles.'),
     nl.
 
@@ -73,27 +75,27 @@ iniciar_interfaz :-
     mostrar_bienvenida,
     ciclo_chatbot.
 
-% Mantiene la conversacion activa mediante recursividad.
+% Mantiene la conversación activa mediante recursividad.
 ciclo_chatbot :-
     leer_entrada(Palabras),
     (
         es_salida(Palabras)
     ->
         preguntar_guardar,
-        mostrar_respuesta('Hasta luego. Que tengas un excelente dia!')
+        mostrar_respuesta('Hasta luego. Que tengas un excelente día!')
     ;
         catch(
             (procesar_entrada(Palabras, Respuesta),
              manejar_respuesta(Respuesta)),
             _,
-            mostrar_respuesta('Ocurrio un error inesperado. Intenta con otra pregunta.')
+            mostrar_respuesta('Ocurrió un error inesperado. Intenta con otra pregunta.')
         ),
         ciclo_chatbot
     ).
 
-% Lee una linea desde consola y la normaliza.
+% Lee una línea desde consola y la normaliza.
 leer_entrada(Palabras) :-
-    write('Usuario: '),
+    writeln('Usuario:'),
     flush_output,
     read_line_to_string(user_input, Entrada),
     normalizar_entrada(Entrada, Palabras).
@@ -113,11 +115,11 @@ manejar_respuesta(desconocido(Tema, Mensaje)) :-
 manejar_respuesta(Respuesta) :-
     mostrar_respuesta(Respuesta).
 
-% Solicita al usuario una definicion para un tema desconocido.
+% Solicita al usuario una definición para un tema desconocido.
 preguntar_aprendizaje(Tema) :-
     nombre_mostrable(Tema, TemaTexto),
-    format('Chatbot: Deseas ensenharme sobre "~w"? Escribe una definicion o "omitir".~n', [TemaTexto]),
-    write('Usuario: '),
+    format('Chatbot: ¿Deseas enseñarme sobre "~w"? Escribe una definición u "omitir".~n', [TemaTexto]),
+    writeln('Usuario:'),
     flush_output,
     read_line_to_string(user_input, Entrada),
     normalizar_entrada(Entrada, Palabras),
@@ -126,20 +128,24 @@ preguntar_aprendizaje(Tema) :-
 % El usuario elige omitir el aprendizaje.
 procesar_respuesta_aprendizaje(_, [omitir]) :-
     mostrar_respuesta('Entendido, continuemos.'), !.
-% El usuario no escribio nada.
+procesar_respuesta_aprendizaje(_, [no]) :-
+    mostrar_respuesta('Entendido, continuemos.'), !.
+procesar_respuesta_aprendizaje(_, [n]) :-
+    mostrar_respuesta('Entendido, continuemos.'), !.
+% El usuario no escribió nada.
 procesar_respuesta_aprendizaje(_, []) :-
-    mostrar_respuesta('No se recibio ninguna definicion.'), !.
-% La definicion es demasiado larga.
+    mostrar_respuesta('No se recibió ninguna definición.'), !.
+% La definición es demasiado larga.
 procesar_respuesta_aprendizaje(_, Palabras) :-
     length(Palabras, Len),
     Len > 60,
-    mostrar_respuesta('La definicion es demasiado larga. Intenta con una mas concisa.'), !.
-% Valida y pide confirmacion antes de aprender.
+    mostrar_respuesta('La definición es demasiado larga. Intenta con una más concisa.'), !.
+% Valida y pide confirmación antes de aprender.
 procesar_respuesta_aprendizaje(Tema, Palabras) :-
     unir_texto(Palabras, Definicion),
     nombre_mostrable(Tema, TemaTexto),
-    format('Chatbot: Aprendo que "~w" es "~w". Confirmas? (si/no)~n', [TemaTexto, Definicion]),
-    write('Usuario: '),
+    format('Chatbot: Aprendo que "~w" es "~w". ¿Confirmas? (sí/no)~n', [TemaTexto, Definicion]),
+    writeln('Usuario:'),
     flush_output,
     read_line_to_string(user_input, Confirmacion),
     normalizar_entrada(Confirmacion, ConfPalabras),
@@ -149,10 +155,10 @@ procesar_respuesta_aprendizaje(Tema, Palabras) :-
         aprender_concepto(Tema, Definicion, Respuesta),
         mostrar_respuesta(Respuesta)
     ;
-        mostrar_respuesta('Entendido, no guarde esa informacion.')
+        mostrar_respuesta('Entendido, no guardé esa información.')
     ).
 
-% Pregunta si guardar el conocimiento aprendido en esta sesion.
+% Pregunta si guardar el conocimiento aprendido en esta sesión.
 preguntar_guardar :-
     findall(H, conocimiento_aprendido(H), Hechos),
     (
@@ -161,9 +167,9 @@ preguntar_guardar :-
         true
     ;
         length(Hechos, N),
-        format('Chatbot: Aprendi ~w nuevos conocimientos en esta sesion.~n', [N]),
-        writeln('Chatbot: Deseas guardar el conocimiento aprendido para futuras sesiones? (si/no)'),
-        write('Usuario: '),
+        format('Chatbot: Aprendí ~w nuevos conocimientos en esta sesión.~n', [N]),
+        writeln('Chatbot: ¿Deseas guardar el conocimiento aprendido para futuras sesiones? (sí/no)'),
+        writeln('Usuario:'),
         flush_output,
         read_line_to_string(user_input, Entrada),
         normalizar_entrada(Entrada, Palabras),
@@ -172,6 +178,6 @@ preguntar_guardar :-
         ->
             guardar_sesion_a_archivo
         ;
-            writeln('Chatbot: Entendido, el conocimiento de esta sesion no se guardara.')
+            writeln('Chatbot: Entendido, el conocimiento de esta sesión no se guardará.')
         )
     ).

@@ -1,5 +1,7 @@
+:- encoding(utf8).
+
 % =========================================================
-% Aprendizaje dinamico del chatbot
+% Aprendizaje dinámico del chatbot
 % =========================================================
 
 :- dynamic concepto/2.
@@ -9,11 +11,11 @@
 
 % =========================================================
 % Aprender un concepto nuevo.
-% Valida duplicados y longitud minima antes de guardar.
+% Valida duplicados y longitud mínima antes de guardar.
 % =========================================================
 
-% La definicion es demasiado corta para ser valida.
-aprender_concepto(_, Descripcion, 'La definicion es demasiado corta. Por favor escribe una definicion mas completa.') :-
+% La definición es demasiado corta para ser válida.
+aprender_concepto(_, Descripcion, 'La definición es demasiado corta. Por favor escribe una definición más completa.') :-
     atom_length(Descripcion, Len),
     Len < 4, !.
 
@@ -23,7 +25,7 @@ aprender_concepto(Tema, _, Respuesta) :-
     !,
     nombre_mostrable(Tema, TemaTexto),
     format(string(Respuesta),
-        'Ya tengo informacion sobre "~w". Si deseas actualizarla, usa: actualizar que ~w es <nueva definicion>.',
+        'Ya tengo información sobre "~w". Si deseas actualizarla, usa: actualizar que ~w es <nueva definición>.',
         [TemaTexto, TemaTexto]).
 
 % Guarda el nuevo concepto.
@@ -46,16 +48,16 @@ actualizar_concepto(Tema, Descripcion, Respuesta) :-
     format(string(Respuesta), 'He actualizado el conocimiento sobre ~w.', [TemaTexto]).
 
 % =========================================================
-% Aprender una definicion directa.
+% Aprender una definición directa.
 % =========================================================
 
 aprender_definicion(Tema, Definicion, Respuesta) :-
     guardar_conocimiento_dinamico(definicion(Tema, Definicion)),
     nombre_mostrable(Tema, TemaTexto),
-    format(string(Respuesta), 'He aprendido la definicion de ~w.', [TemaTexto]).
+    format(string(Respuesta), 'He aprendido la definición de ~w.', [TemaTexto]).
 
 % =========================================================
-% Aprender un sinonimo nuevo.
+% Aprender un sinónimo nuevo.
 % Valida que no exista ya antes de guardar.
 % =========================================================
 
@@ -64,23 +66,23 @@ aprender_sinonimo(Sinonimo, Concepto, Respuesta) :-
     !,
     nombre_mostrable(Sinonimo, SinonimoTexto),
     nombre_mostrable(Concepto, ConceptoTexto),
-    format(string(Respuesta), 'Ya sabia que ~w es sinonimo de ~w.', [SinonimoTexto, ConceptoTexto]).
+    format(string(Respuesta), 'Ya sabía que ~w es sinónimo de ~w.', [SinonimoTexto, ConceptoTexto]).
 
 aprender_sinonimo(Sinonimo, Concepto, Respuesta) :-
     hecho_seguro(sinonimo(Concepto, Sinonimo)),
     !,
     nombre_mostrable(Sinonimo, SinonimoTexto),
     nombre_mostrable(Concepto, ConceptoTexto),
-    format(string(Respuesta), 'Ya sabia que ~w y ~w son equivalentes.', [SinonimoTexto, ConceptoTexto]).
+    format(string(Respuesta), 'Ya sabía que ~w y ~w son equivalentes.', [SinonimoTexto, ConceptoTexto]).
 
 aprender_sinonimo(Sinonimo, Concepto, Respuesta) :-
     guardar_conocimiento_dinamico(sinonimo(Sinonimo, Concepto)),
     nombre_mostrable(Sinonimo, SinonimoTexto),
     nombre_mostrable(Concepto, ConceptoTexto),
-    format(string(Respuesta), 'He aprendido que ~w es sinonimo de ~w.', [SinonimoTexto, ConceptoTexto]).
+    format(string(Respuesta), 'He aprendido que ~w es sinónimo de ~w.', [SinonimoTexto, ConceptoTexto]).
 
 % =========================================================
-% Guarda un hecho dinamicamente y registra que fue aprendido.
+% Guarda un hecho dinámicamente y registra que fue aprendido.
 % =========================================================
 
 guardar_conocimiento_dinamico(Hecho) :-
@@ -88,7 +90,7 @@ guardar_conocimiento_dinamico(Hecho) :-
     assertz(conocimiento_aprendido(Hecho)).
 
 % =========================================================
-% Persiste el conocimiento aprendido en esta sesion a disco.
+% Persiste el conocimiento aprendido en esta sesión a disco.
 % Se agrega al archivo existente (modo append) para no perder
 % lo aprendido en sesiones previas.
 % =========================================================
@@ -108,8 +110,8 @@ guardar_sesion_a_archivo :-
     ).
 
 guardar_hechos_a_archivo(Hechos) :-
-    open('conocimiento/conocimiento_aprendido.pl', append, Stream),
-    write(Stream, '\n% --- Conocimiento aprendido en sesion ---\n'),
+    open('conocimiento/conocimiento_aprendido.pl', append, Stream, [encoding(utf8)]),
+    write(Stream, '\n% --- Conocimiento aprendido en sesión ---\n'),
     forall(
         member(H, Hechos),
         (write_term(Stream, H, [quoted(true)]), write(Stream, '.\n'))

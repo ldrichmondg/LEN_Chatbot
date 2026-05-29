@@ -1,3 +1,5 @@
+:- encoding(utf8).
+
 % =========================================================
 % Base de conocimiento - Requisitos de cursos
 % Proyecto 3 - Paradigma Lógico
@@ -25,9 +27,8 @@ requisito(ingles_1, examen_diagnostico).
 requisito(ingles_1, ingles_basico).
 requisito(programacion_orientada_objetos, taller_programacion).
 requisito(programacion_orientada_objetos, introduccion_programacion).
-requisito(estructuras_datos, fundamentos_organizacion_computadoras).
-requisito(estructuras_datos, taller_programacion).
-requisito(arquitectura_computadores, comunicacion_escrita).
+requisito(arquitectura_computadores, taller_programacion).
+requisito(arquitectura_computadores, fundamentos_organizacion_computadoras).
 requisito(calculo_diferencial_integral, matematica_general).
 requisito(calculo_diferencial_integral, matematica_discreta).
 
@@ -86,6 +87,28 @@ requisito(practica_profesional, proyecto_ingenieria_software).
 requisito(practica_profesional, actividad_cultural_1).
 requisito(practica_profesional, actividad_deportiva_1).
 requisito(practica_profesional, actividad_cultural_deportiva).
+
+% ===== ELECTIVAS =====
+
+requisito(visualizacion_informacion, estructuras_datos).
+requisito(criptografia, estadistica).
+requisito(sistemas_informacion_geografica, estructuras_datos).
+requisito(programacion_logica, matematica_discreta).
+requisito(componentes_comunicaciones, bases_datos_1).
+requisito(desarrollo_aplicaciones_dispositivos_moviles, bases_datos_1).
+requisito(analisis_numerico, calculo_diferencial_integral).
+requisito(analisis_numerico, calculo_algebra_lineal).
+requisito(introduccion_computacion_paralela, analisis_algoritmos).
+requisito(introduccion_computacion_paralela, arquitectura_computadores).
+requisito(innovacion_creatividad, bases_datos_1).
+requisito(introduccion_reconocimiento_patrones, probabilidades).
+requisito(simulacion_sistemas_naturales, analisis_algoritmos).
+requisito(simulacion_sistemas_naturales, programacion_orientada_objetos).
+requisito(introduccion_biologia_molecular_computacional, lenguajes_programacion).
+requisito(introduccion_desarrollo_paginas_web, lenguajes_programacion).
+requisito(introduccion_desarrollo_paginas_web, bases_datos_1).
+requisito(introduccion_analisis_datos, bases_datos_1).
+requisito(recuperacion_informacion_textual, ninguno).
 
 % =========================================================
 % Reglas de requisitos

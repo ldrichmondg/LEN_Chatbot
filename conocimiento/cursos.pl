@@ -1,3 +1,4 @@
+:- encoding(utf8).
 
 % =========================================================
 % Base de conocimiento - Cursos de Computación
@@ -30,29 +31,13 @@ definicion(semestre, 'Un semestre representa una división temporal del plan aca
 definicion(requisito, 'Condición necesaria para poder matricular otro curso.').
 definicion(programacion_orientada_objetos, 'Paradigma de programación basado en objetos y clases.').
 
-sinonimo(materia, curso).
-sinonimo(asignatura, curso).
-sinonimo(clase, curso).
-sinonimo(poo, programacion_orientada_objetos).
-sinonimo(ia, inteligencia_artificial).
-sinonimo(ap, administracion_proyectos).
-sinonimo(arqui, arquitectura_computadores).
-sinonimo(foc, fundamentos_organizacion_computadoras).
-sinonimo(cdi, calculo_diferencial_integral).
-sinonimo(cal, calculo_algebra_lineal).
-sinonimo(lenguajes, lenguajes_programacion).
-sinonimo(io, investigacion_operaciones).
-sinonimo(compi, compiladores_interpretes).
-sinonimo(so, principios_sistemas_operativos).
-
-
 asociado_con(curso, carrera_computacion).
 asociado_con(programacion_orientada_objetos, programacion).
 asociado_con(bases_datos_1, base_datos).
 asociado_con(inteligencia_artificial, programacion).
 
 % =========================================================
-% 1b. Hechos es_un: relaciones de clasificacion
+% 1b. Hechos es_un: relaciones de clasificación
 % =========================================================
 
 es_un(prolog, lenguaje_programacion).
@@ -66,20 +51,6 @@ es_un(html, lenguaje_marcado).
 es_un(javascript, lenguaje_programacion).
 es_un(ruby, lenguaje_programacion).
 
-es_un(perro, animal).
-es_un(gato, animal).
-es_un(pajaro, animal).
-es_un(salmon, animal).
-
-es_un(manzana, fruta).
-es_un(pera, fruta).
-es_un(naranja, fruta).
-
-es_un(prolog, paradigma_logico).
-es_un(haskell, paradigma_funcional).
-es_un(java, paradigma_orientado_objetos).
-es_un(python, paradigma_multiparadigma).
-
 es_un(algoritmo, concepto_computacion).
 es_un(estructura_datos, concepto_computacion).
 es_un(compilador, herramienta_software).
@@ -92,33 +63,12 @@ es_un(machine_learning, area_computacion).
 es_un(ciberseguridad, area_computacion).
 
 % =========================================================
-% 1c. Hechos tiene: propiedades de categorias (para inferencia)
+% 1c. Hechos tiene: propiedades de categorías (para inferencia)
 % =========================================================
 
 tiene(lenguaje_programacion, sintaxis).
 tiene(lenguaje_programacion, semantica).
 tiene(lenguaje_programacion, compilador_o_interprete).
-
-tiene(paradigma_logico, backtracking).
-tiene(paradigma_logico, unificacion).
-tiene(paradigma_logico, hechos_y_reglas).
-
-tiene(paradigma_funcional, funciones_puras).
-tiene(paradigma_funcional, inmutabilidad).
-tiene(paradigma_funcional, evaluacion_perezosa).
-
-tiene(paradigma_orientado_objetos, clases).
-tiene(paradigma_orientado_objetos, herencia).
-tiene(paradigma_orientado_objetos, polimorfismo).
-tiene(paradigma_orientado_objetos, encapsulamiento).
-
-tiene(animal, metabolismo).
-tiene(animal, capacidad_reproducirse).
-tiene(animal, celulas).
-
-tiene(fruta, vitaminas).
-tiene(fruta, azucares_naturales).
-tiene(fruta, fibra).
 
 tiene(algoritmo, complejidad_temporal).
 tiene(algoritmo, complejidad_espacial).
@@ -144,62 +94,45 @@ tiene(area_computacion, aplicacion_practica).
 % =========================================================
 
 concepto(algoritmo, 'Conjunto finito de pasos definidos para resolver un problema.').
-concepto(recursividad, 'Tecnica en la que una funcion se llama a si misma para resolver subproblemas.').
-concepto(estructura_datos, 'Forma de organizar y almacenar datos para acceso y modificacion eficiente.').
-concepto(compilador, 'Programa que traduce codigo fuente a codigo ejecutable.').
-concepto(interprete, 'Programa que ejecuta instrucciones directamente sin compilacion previa.').
-concepto(paradigma_programacion, 'Estilo o enfoque fundamental de programacion de computadoras.').
-concepto(programacion_logica, 'Paradigma basado en logica formal donde se declaran hechos y reglas.').
-concepto(programacion_funcional, 'Paradigma que trata la computacion como evaluacion de funciones matematicas.').
-concepto(programacion_imperativa, 'Paradigma que describe computacion como secuencia de sentencias que modifican el estado.').
-concepto(inteligencia_artificial, 'Campo de la computacion que desarrolla sistemas capaces de realizar tareas que requieren inteligencia humana.').
-concepto(machine_learning, 'Rama de la IA que permite a los sistemas aprender de datos sin ser explicitamente programados.').
-concepto(backtracking, 'Tecnica algoritmíca que prueba posibles soluciones y retrocede al encontrar un camino sin solucion.').
-concepto(unificacion, 'Proceso en logica que encuentra sustituciones que hacen dos terminos identicos.').
-concepto(polimorfismo, 'Capacidad de un objeto de tomar diferentes formas segun el contexto de uso.').
-concepto(herencia, 'Mecanismo de POO que permite que una clase adquiera propiedades y metodos de otra.').
+concepto(recursividad, 'Técnica en la que una función se llama a sí misma para resolver subproblemas.').
+concepto(estructura_datos, 'Forma de organizar y almacenar datos para acceso y modificación eficiente.').
+concepto(compilador, 'Programa que traduce código fuente a código ejecutable.').
+concepto(interprete, 'Programa que ejecuta instrucciones directamente sin compilación previa.').
+concepto(paradigma_programacion, 'Estilo o enfoque fundamental de programación de computadoras.').
+concepto(programacion_logica, 'Paradigma basado en lógica formal donde se declaran hechos y reglas.').
+concepto(programacion_funcional, 'Paradigma que trata la computación como evaluación de funciones matemáticas.').
+concepto(programacion_imperativa, 'Paradigma que describe computación como secuencia de sentencias que modifican el estado.').
+concepto(inteligencia_artificial, 'Campo de la computación que desarrolla sistemas capaces de realizar tareas que requieren inteligencia humana.').
+concepto(machine_learning, 'Rama de la IA que permite a los sistemas aprender de datos sin ser explícitamente programados.').
+concepto(backtracking, 'Técnica algorítmica que prueba posibles soluciones y retrocede al encontrar un camino sin solución.').
+concepto(unificacion, 'Proceso en lógica que encuentra sustituciones que hacen dos términos idénticos.').
+concepto(polimorfismo, 'Capacidad de un objeto de tomar diferentes formas según el contexto de uso.').
+concepto(herencia, 'Mecanismo de POO que permite que una clase adquiera propiedades y métodos de otra.').
 concepto(encapsulamiento, 'Principio de POO que oculta los detalles internos de un objeto.').
-concepto(abstraccion, 'Proceso de simplificar sistemas complejos enfocandose en aspectos esenciales.').
-concepto(modularidad, 'Principio de diseno que divide un sistema en componentes independientes.').
+concepto(abstraccion, 'Proceso de simplificar sistemas complejos enfocándose en aspectos esenciales.').
+concepto(modularidad, 'Principio de diseño que divide un sistema en componentes independientes.').
 concepto(complejidad_algoritmica, 'Medida de los recursos (tiempo o espacio) requeridos por un algoritmo.').
-concepto(big_o, 'Notacion que describe el comportamiento del tiempo de ejecucion en el peor caso.').
+concepto(big_o, 'Notación que describe el comportamiento del tiempo de ejecución en el peor caso.').
 concepto(grafo, 'Estructura de datos compuesta por nodos y aristas que los conectan.').
-concepto(arbol, 'Estructura de datos jerarquica con un nodo raiz y subarboles de hijos.').
-concepto(pila, 'Estructura de datos LIFO: el ultimo en entrar es el primero en salir.').
+concepto(arbol, 'Estructura de datos jerárquica con un nodo raíz y subárboles de hijos.').
+concepto(pila, 'Estructura de datos LIFO: el último en entrar es el primero en salir.').
 concepto(cola, 'Estructura de datos FIFO: el primero en entrar es el primero en salir.').
 concepto(lista_enlazada, 'Estructura de datos donde cada elemento apunta al siguiente.').
-concepto(hash_table, 'Estructura de datos que mapea claves a valores mediante una funcion hash.').
-concepto(criptografia, 'Disciplina que estudia tecnicas para proteger informacion mediante cifrado.').
-concepto(protocolo, 'Conjunto de reglas que regulan la comunicacion entre sistemas.').
-concepto(api, 'Interfaz de programacion de aplicaciones que permite comunicacion entre sistemas.').
+concepto(hash_table, 'Estructura de datos que mapea claves a valores mediante una función hash.').
+concepto(criptografia, 'Disciplina que estudia técnicas para proteger información mediante cifrado.').
+concepto(protocolo, 'Conjunto de reglas que regulan la comunicación entre sistemas.').
+concepto(api, 'Interfaz de programación de aplicaciones que permite comunicación entre sistemas.').
 concepto(http, 'Protocolo de transferencia de hipertexto usado en la web.').
-concepto(tcp_ip, 'Conjunto de protocolos fundamentales de comunicacion en Internet.').
+concepto(tcp_ip, 'Conjunto de protocolos fundamentales de comunicación en Internet.').
 
 definicion(algoritmo, 'Un algoritmo es una secuencia finita, ordenada y no ambigua de pasos para resolver un problema.').
-definicion(recursividad, 'La recursividad es una tecnica donde una funcion se invoca a si misma, reduciendo el problema hasta un caso base.').
-definicion(compilador, 'Un compilador es un programa que transforma codigo fuente escrito en un lenguaje de alto nivel a codigo de maquina o codigo intermedio.').
-definicion(interprete, 'Un interprete ejecuta el codigo fuente directamente, instruccion por instruccion, sin producir un ejecutable previo.').
-definicion(inteligencia_artificial, 'La IA es la rama de la computacion que estudia como crear sistemas capaces de realizar tareas que normalmente requieren inteligencia humana, como aprendizaje, razonamiento y percepcion.').
-definicion(machine_learning, 'El aprendizaje automatico es un subcampo de la IA donde los sistemas mejoran su rendimiento a traves de la experiencia, sin ser programados explicitamente para cada tarea.').
-definicion(backtracking, 'El backtracking es una estrategia algorítmica que explora todas las posibles soluciones retrocediendo cuando se llega a un estado que no puede conducir a una solucion valida.').
-definicion(prolog, 'Prolog es un lenguaje de programacion logica basado en la logica de predicados de primer orden, donde se definen hechos y reglas, y el sistema responde preguntas mediante resolucion y backtracking.').
-
-% Sinonimos adicionales
-sinonimo(programacion_logica, prolog).
-sinonimo(bd, base_datos).
-sinonimo(db, base_datos).
-sinonimo(bd1, bases_datos_1).
-sinonimo(bd2, bases_datos_2).
-sinonimo(ed, estructuras_datos).
-sinonimo(aa, analisis_algoritmos).
-sinonimo(redes, redes).
-sinonimo(ml, machine_learning).
-sinonimo(ai, inteligencia_artificial).
-sinonimo(poo, programacion_orientada_objetos).
-sinonimo(so, principios_sistemas_operativos).
-sinonimo(compi, compiladores_interpretes).
-sinonimo(recur, recursividad).
-sinonimo(hash, hash_table).
+definicion(recursividad, 'La recursividad es una técnica donde una función se invoca a sí misma, reduciendo el problema hasta un caso base.').
+definicion(compilador, 'Un compilador es un programa que transforma código fuente escrito en un lenguaje de alto nivel a código de máquina o código intermedio.').
+definicion(interprete, 'Un intérprete ejecuta el código fuente directamente, instrucción por instrucción, sin producir un ejecutable previo.').
+definicion(inteligencia_artificial, 'La IA es la rama de la computación que estudia cómo crear sistemas capaces de realizar tareas que normalmente requieren inteligencia humana, como aprendizaje, razonamiento y percepción.').
+definicion(machine_learning, 'El aprendizaje automático es un subcampo de la IA donde los sistemas mejoran su rendimiento a través de la experiencia, sin ser programados explícitamente para cada tarea.').
+definicion(backtracking, 'El backtracking es una estrategia algorítmica que explora todas las posibles soluciones retrocediendo cuando se llega a un estado que no puede conducir a una solución válida.').
+definicion(prolog, 'Prolog es un lenguaje de programación lógica basado en la lógica de predicados de primer orden, donde se definen hechos y reglas, y el sistema responde preguntas mediante resolución y backtracking.').
 
 % =========================================================
 % 2. Hechos: cursos registrados
@@ -375,6 +308,41 @@ nombre_curso(simulacion_sistemas_naturales, 'Simulación de Sistemas Naturales')
 nombre_curso(introduccion_biologia_molecular_computacional, 'Introducción a la Biología Molecular Computacional').
 nombre_curso(introduccion_graficos_computador, 'Introducción a los Gráficos por Computadora').
 nombre_curso(recuperacion_informacion_textual, 'Recuperación de Información Textual').
+
+
+sinonimo(materia, curso).
+sinonimo(asignatura, curso).
+sinonimo(clase, curso).
+sinonimo(poo, programacion_orientada_objetos).
+sinonimo(ia, inteligencia_artificial).
+sinonimo(ai, inteligencia_artificial).
+sinonimo(ap, administracion_proyectos).
+sinonimo(arqui, arquitectura_computadores).
+sinonimo(foc, fundamentos_organizacion_computadoras).
+sinonimo(funda, fundamentos_organizacion_computadoras).
+sinonimo(cdi, calculo_diferencial_integral).
+sinonimo(cal, calculo_algebra_lineal).
+sinonimo(lenguajes, lenguajes_programacion).
+sinonimo(io, investigacion_operaciones).
+sinonimo(compi, compiladores_interpretes).
+sinonimo(so, principios_sistemas_operativos).
+sinonimo(bd, base_datos).
+sinonimo(db, base_datos).
+sinonimo(bd1, bases_datos_1).
+sinonimo(bd2, bases_datos_2).
+sinonimo(ed, estructuras_datos).
+sinonimo(practica, practica_profesional).
+sinonimo(proyecto, proyecto_ingenieria_software).
+sinonimo(segu, seguridad_software).
+sinonimo(ciber, seguridad_software).
+sinonimo(discreta, matematica_discreta).
+sinonimo(general, matematica_general).
+sinonimo(comu_oral, comunicacion_oral).
+sinonimo(comu_escrita, comunicacion_escrita).
+sinonimo(seminario, seminario_estudios_filosoficos_historicos).
+sinonimo(seminario, seminario_estudios_costarricenses).
+sinonimo(humanistica, centros_formacion_humanistica).
+sinonimo(cripto, criptografia)
 
 % =========================================================
 % 4. Reglas lógicas (simétricas a `profesores.pl`)

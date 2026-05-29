@@ -1,8 +1,10 @@
+:- encoding(utf8).
+
 % =========================================================
-% Generacion de respuestas desde la base de conocimiento
+% Generación de respuestas desde la base de conocimiento
 % =========================================================
 
-% Responde preguntas de definicion.
+% Responde preguntas de definición.
 responder_definicion(Tema, Respuesta) :-
     buscar_conocimiento(Tema, Respuesta), !.
 responder_definicion(Tema, desconocido(Tema, Respuesta)) :-
@@ -15,7 +17,7 @@ responder_concepto(Tema, desconocido(Tema, Respuesta)) :-
     responder_desconocido(Tema, Respuesta).
 
 % =========================================================
-% Consulta relaciones academicas y generales.
+% Consulta relaciones académicas y generales.
 % =========================================================
 
 responder_relacion(requisitos(Tema), Respuesta) :-
@@ -65,8 +67,8 @@ buscar_conocimiento(Tema, Respuesta) :-
 buscar_conocimiento(Tema, Respuesta) :-
     buscar_por_sinonimo(Tema, Respuesta), !.
 
-% Orden de busqueda directa:
-% 1. Definicion explicita
+% Orden de búsqueda directa:
+% 1. Definición explícita
 % 2. Concepto
 % 3. es_un con inferencia de tiene
 % 4. Propiedades directas de tiene
@@ -96,7 +98,7 @@ buscar_conocimiento_directo(Tema, Respuesta) :-
         maplist(nombre_mostrable, Props, PropsTexto),
         atomic_list_concat(PropsTexto, ', ', PropsUnidos),
         format(string(Respuesta),
-            '~w es un ~w, y por inferencia logica tiene: ~w.',
+            '~w es un ~w, y por inferencia lógica tiene: ~w.',
             [TemaTexto, ClaseTexto, PropsUnidos])
     ;
         respuesta_es_un(Tema, Clase, Respuesta)
@@ -115,13 +117,13 @@ buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(relacionado_con(Tema, Relacionado)),
     nombre_mostrable(Tema, TemaTexto),
     nombre_mostrable(Relacionado, RelacionadoTexto),
-    format(string(Respuesta), '~w esta relacionado con ~w.', [TemaTexto, RelacionadoTexto]), !.
+    format(string(Respuesta), '~w está relacionado con ~w.', [TemaTexto, RelacionadoTexto]), !.
 
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(asociado_con(Tema, Asociado)),
     nombre_mostrable(Tema, TemaTexto),
     nombre_mostrable(Asociado, AsociadoTexto),
-    format(string(Respuesta), '~w esta asociado con ~w.', [TemaTexto, AsociadoTexto]), !.
+    format(string(Respuesta), '~w está asociado con ~w.', [TemaTexto, AsociadoTexto]), !.
 
 buscar_conocimiento_directo(Tema, Respuesta) :-
     hecho_seguro(requisito(Tema, Requisito)),
@@ -145,7 +147,7 @@ buscar_conocimiento_directo(Tema, Respuesta) :-
     datos_profesor_seguro(Tema, Respuesta), !.
 
 % =========================================================
-% Busca usando sinonimos con deteccion de ciclos.
+% Busca usando sinónimos con detección de ciclos.
 % =========================================================
 
 buscar_por_sinonimo(Tema, Respuesta) :-
@@ -168,12 +170,12 @@ responder_desconocido(Tema, Respuesta) :-
     nombre_mostrable(Tema, TemaTexto),
     format(
         string(Respuesta),
-        'No tengo conocimiento suficiente sobre "~w". Puedes ensenarme usando: aprender que ~w es <definicion>',
+        'No tengo conocimiento suficiente sobre "~w". Puedes enseñarme usando: aprender que ~w es <definición>',
         [TemaTexto, TemaTexto]
     ).
 
 % =========================================================
-% Relacion general: busca cualquier hecho conocido.
+% Relación general: busca cualquier hecho conocido.
 % =========================================================
 
 buscar_relacion_general(Tema, Respuesta) :-
@@ -184,7 +186,7 @@ buscar_relacion_general(Tema, Respuesta) :-
 % Convierte listas de relaciones en una respuesta legible.
 % =========================================================
 
-respuesta_lista(_, [], 'No encontre datos registrados para esa consulta.') :- !.
+respuesta_lista(_, [], 'No encontré datos registrados para esa consulta.') :- !.
 respuesta_lista(Prefijo, Lista, Respuesta) :-
     sort(Lista, ListaUnica),
     ListaUnica \= [],
@@ -193,28 +195,28 @@ respuesta_lista(Prefijo, Lista, Respuesta) :-
     format(string(Respuesta), '~w: ~w.', [Prefijo, Texto]).
 
 % =========================================================
-% Inferencias logicas de requisitos y correquisitos.
+% Inferencias lógicas de requisitos y correquisitos.
 % =========================================================
 
 responder_requisito_de(Requisito, Curso, Respuesta) :-
     hecho_seguro(requisito(Curso, Requisito)),
     nombre_mostrable(Requisito, RequisitoTexto),
     nombre_mostrable(Curso, CursoTexto),
-    format(string(Respuesta), 'Si, ~w es requisito de ~w.', [RequisitoTexto, CursoTexto]).
+    format(string(Respuesta), 'Sí, ~w es requisito de ~w.', [RequisitoTexto, CursoTexto]).
 responder_requisito_de(Requisito, Curso, Respuesta) :-
     nombre_mostrable(Requisito, RequisitoTexto),
     nombre_mostrable(Curso, CursoTexto),
-    format(string(Respuesta), 'No encontre que ~w sea requisito de ~w.', [RequisitoTexto, CursoTexto]).
+    format(string(Respuesta), 'No encontré que ~w sea requisito de ~w.', [RequisitoTexto, CursoTexto]).
 
 responder_correquisito_de(Correquisito, Curso, Respuesta) :-
     hecho_seguro(correquisito(Curso, Correquisito)),
     nombre_mostrable(Correquisito, CorrequisitoTexto),
     nombre_mostrable(Curso, CursoTexto),
-    format(string(Respuesta), 'Si, ~w es correquisito de ~w.', [CorrequisitoTexto, CursoTexto]).
+    format(string(Respuesta), 'Sí, ~w es correquisito de ~w.', [CorrequisitoTexto, CursoTexto]).
 responder_correquisito_de(Correquisito, Curso, Respuesta) :-
     nombre_mostrable(Correquisito, CorrequisitoTexto),
     nombre_mostrable(Curso, CursoTexto),
-    format(string(Respuesta), 'No encontre que ~w sea correquisito de ~w.', [CorrequisitoTexto, CursoTexto]).
+    format(string(Respuesta), 'No encontré que ~w sea correquisito de ~w.', [CorrequisitoTexto, CursoTexto]).
 
 cursos_dependientes(Tema, Cursos) :-
     findall(Curso, hecho_seguro(requisito(Curso, Tema)), CursosRequisito),
@@ -245,11 +247,11 @@ responder_puede_matricular(Curso, Aprobados, Respuesta) :-
     (
         Faltantes = []
     ->
-        format(string(Respuesta), 'Si, puedes matricular ~w porque cumples sus requisitos registrados.', [CursoTexto])
+        format(string(Respuesta), 'Sí, puedes matricular ~w porque cumples sus requisitos registrados.', [CursoTexto])
     ;
         maplist(nombre_mostrable, Faltantes, FaltantesTexto),
         atomic_list_concat(FaltantesTexto, ', ', Texto),
-        format(string(Respuesta), 'No todavia. Para matricular ~w te falta: ~w.', [CursoTexto, Texto])
+        format(string(Respuesta), 'No todavía. Para matricular ~w te falta: ~w.', [CursoTexto, Texto])
     ).
 
 restar_lista([], _, []).
@@ -260,7 +262,7 @@ restar_lista([Elemento | Resto], Lista, [Elemento | Faltantes]) :-
     restar_lista(Resto, Lista, Faltantes).
 
 % =========================================================
-% Resolucion de alias y verificacion de temas registrados.
+% Resolución de alias y verificación de temas registrados.
 % =========================================================
 
 resolver_alias(Tema, Tema) :-
@@ -325,10 +327,10 @@ datos_profesor_seguro(Tema, Respuesta) :-
         existe_predicado(correo_profesor/2),
         correo_profesor(Tema, Correo)
     ->
-        format(string(Respuesta), '~w es profesor de Computacion. Su correo es ~w.', [Nombre, Correo])
+        format(string(Respuesta), '~w es profesor de Computación. Su correo es ~w.', [Nombre, Correo])
     ;
         nombre_mostrable(Tema, NombreTexto),
-        format(string(Respuesta), '~w es profesor de Computacion.', [NombreTexto])
+        format(string(Respuesta), '~w es profesor de Computación.', [NombreTexto])
     ).
 
 % Respuesta especial para hechos es_un/2 sin tiene/2 asociado.

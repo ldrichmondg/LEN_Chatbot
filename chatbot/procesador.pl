@@ -1,3 +1,5 @@
+:- encoding(utf8).
+
 % =========================================================
 % Procesamiento de entradas e intenciones
 % =========================================================
@@ -51,7 +53,7 @@ es_ayuda([como, te, uso]).
 es_ayuda([como, funciona]).
 
 % =========================================================
-% Preguntas de definicion y conceptuales.
+% Preguntas de definición y conceptuales.
 % =========================================================
 
 es_pregunta_definicion([que, es | TemaPalabras], Tema) :-
@@ -157,7 +159,7 @@ quitar_articulo([la | Resto], Resto) :- Resto \= [], !.
 quitar_articulo(Palabras, Palabras).
 
 % =========================================================
-% Aprendizaje de sinonimos.
+% Aprendizaje de sinónimos.
 % =========================================================
 
 es_aprendizaje_sinonimo([aprender, sinonimo, Sinonimo | ConceptoPalabras], Sinonimo, Concepto) :-
@@ -206,7 +208,7 @@ es_comando_reservado(si).
 es_comando_reservado(no).
 
 % =========================================================
-% Consultas de relaciones academicas.
+% Consultas de relaciones académicas.
 % =========================================================
 
 es_consulta_relacion([requisitos, de | TemaPalabras], requisitos(Tema)) :-

@@ -1,3 +1,5 @@
+:- encoding(utf8).
+
 % =========================================================
 % Base de conocimiento - Correquisitos de cursos
 % Proyecto 3 - Paradigma Lógico
