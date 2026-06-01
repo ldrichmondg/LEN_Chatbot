@@ -58,8 +58,20 @@ mostrar_bienvenida :-
     writeln('Chatbot: Escribe "ayuda" para ver los comandos disponibles.'),
     nl.
 
+% Carga conocimiento guardado en sesiones previas si existe.
+cargar_conocimiento_persistente :-
+    (   exists_file('conocimiento/conocimiento_aprendido.pl')
+    ->  catch(
+            consult('conocimiento/conocimiento_aprendido.pl'),
+            _,
+            writeln('Chatbot: No se pudo cargar el conocimiento previo.')
+        )
+    ;   true
+    ).
+
 % Inicia la interfaz por consola.
 iniciar_interfaz :-
+    cargar_conocimiento_persistente,
     mostrar_bienvenida,
     ciclo_chatbot.
 
@@ -69,6 +81,7 @@ ciclo_chatbot :-
     (
         es_salida(Palabras)
     ->
+        preguntar_guardar,
         mostrar_respuesta('Hasta luego. Que tengas un excelente día!')
     ;
         catch(
@@ -197,5 +210,25 @@ procesar_respuesta_aprendizaje(Tema, Palabras) :-
         mostrar_respuesta(Respuesta)
     ;
         mostrar_respuesta('Entendido, no guardé esa información.')
+    ).
+
+% Pregunta si guardar el conocimiento aprendido en esta sesión.
+preguntar_guardar :-
+    findall(H, conocimiento_aprendido(H), Hechos),
+    (
+        Hechos = []
+    ->
+        true
+    ;
+        length(Hechos, N),
+        format('Chatbot: He aprendido ~w conocimientos en esta sesión. ¿Deseas guardarlos para futuras sesiones? (sí/no)~n', [N]),
+        leer_confirmacion(Confirmado),
+        (
+            Confirmado = si
+        ->
+            guardar_sesion_a_archivo
+        ;
+            mostrar_respuesta('Entendido, no guardaré el conocimiento aprendido.')
+        )
     ).
 
