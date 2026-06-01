@@ -31,7 +31,6 @@ aprender_concepto(Tema, _, Respuesta) :-
 % Guarda el nuevo concepto.
 aprender_concepto(Tema, Descripcion, Respuesta) :-
     guardar_conocimiento_dinamico(concepto(Tema, Descripcion)),
-    guardar_conocimiento_dinamico(definicion(Tema, Descripcion)),
     nombre_mostrable(Tema, TemaTexto),
     format(string(Respuesta), 'He aprendido que ~w es ~w.', [TemaTexto, Descripcion]).
 
@@ -43,7 +42,6 @@ actualizar_concepto(Tema, Descripcion, Respuesta) :-
     (retract(concepto(Tema, _)) -> true ; true),
     (retract(definicion(Tema, _)) -> true ; true),
     guardar_conocimiento_dinamico(concepto(Tema, Descripcion)),
-    guardar_conocimiento_dinamico(definicion(Tema, Descripcion)),
     nombre_mostrable(Tema, TemaTexto),
     format(string(Respuesta), 'He actualizado el conocimiento sobre ~w.', [TemaTexto]).
 
@@ -52,7 +50,7 @@ actualizar_concepto(Tema, Descripcion, Respuesta) :-
 % =========================================================
 
 aprender_definicion(Tema, Definicion, Respuesta) :-
-    guardar_conocimiento_dinamico(definicion(Tema, Definicion)),
+    guardar_conocimiento_dinamico(concepto(Tema, Definicion)),
     nombre_mostrable(Tema, TemaTexto),
     format(string(Respuesta), 'He aprendido la definición de ~w.', [TemaTexto]).
 
@@ -88,4 +86,42 @@ aprender_sinonimo(Sinonimo, Concepto, Respuesta) :-
 guardar_conocimiento_dinamico(Hecho) :-
     assertz(Hecho),
     assertz(conocimiento_aprendido(Hecho)).
+
+% =========================================================
+% Persiste el conocimiento aprendido para futuras sesiones.
+% =========================================================
+
+guardar_sesion_a_archivo :-
+    findall(H, conocimiento_aprendido(H), Hechos),
+    (
+        Hechos = []
+    ->
+        writeln('Chatbot: No hay conocimiento nuevo para guardar.')
+    ;
+        catch(
+            guardar_hechos_a_archivo(Hechos),
+            Error,
+            format('Chatbot: Error al guardar: ~w~n', [Error])
+        )
+    ).
+
+guardar_hechos_a_archivo(Hechos) :-
+    asegurar_archivo_aprendizaje,
+    open('conocimiento/conocimiento_aprendido.pl', append, Stream, [encoding(utf8)]),
+    write(Stream, '\n% --- Conocimiento aprendido en sesión ---\n'),
+    forall(
+        member(H, Hechos),
+        (write_term(Stream, H, [quoted(true)]), write(Stream, '.\n'))
+    ),
+    close(Stream),
+    retractall(conocimiento_aprendido(_)),
+    length(Hechos, N),
+    format('Chatbot: Guardé ~w conocimientos en conocimiento/conocimiento_aprendido.pl~n', [N]).
+
+asegurar_archivo_aprendizaje :-
+    exists_file('conocimiento/conocimiento_aprendido.pl'), !.
+asegurar_archivo_aprendizaje :-
+    open('conocimiento/conocimiento_aprendido.pl', write, Stream, [encoding(utf8)]),
+    write(Stream, ':- encoding(utf8).\n'),
+    close(Stream).
 
